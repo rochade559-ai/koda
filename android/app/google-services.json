@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "595685952877",
+    "firebase_url": "https://koda-ebd27-default-rtdb.firebaseio.com",
+    "project_id": "koda-ebd27",
+    "storage_bucket": "koda-ebd27.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:595685952877:android:a01634306a05d9605b9e64",
+        "android_client_info": {
+          "package_name": "br.com.kodaff.koda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "595685952877-30gaivo3ro54du9asbc9nqpsehspk2nm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.kodaff.koda",
+            "certificate_hash": "320b13c1f0ca9542bb24a9ad83ce8f9f014e4bad"
+          }
+        },
+        {
+          "client_id": "595685952877-5gvo1ca823vr8tqjbgs3sjdvp2tlc9if.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIPed1xb5N6MVGH_dBW6zUVo66BNp6WBw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "595685952877-5gvo1ca823vr8tqjbgs3sjdvp2tlc9if.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "595685952877-7o9370lji3cprbvvtgkfsnal7p7tdn19.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.kodaff.koda"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

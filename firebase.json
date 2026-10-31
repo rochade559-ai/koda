@@ -1,0 +1,69 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "koda-ebd27",
+          "appId": "1:595685952877:android:a01634306a05d9605b9e64",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "koda-ebd27",
+          "configurations": {
+            "android": "1:595685952877:android:a01634306a05d9605b9e64",
+            "ios": "1:595685952877:ios:151cf634540eccc65b9e64",
+            "macos": "1:595685952877:ios:151cf634540eccc65b9e64",
+            "web": "1:595685952877:web:68d6718e319c059b5b9e64",
+            "windows": "1:595685952877:web:0cc65112611841105b9e64"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/excluir-conta",
+        "destination": "/excluir-conta.html"
+      },
+      {
+        "source": "/termo",
+        "destination": "/termos.html"
+      },
+      {
+        "source": "/termos",
+        "destination": "/termos.html"
+      },
+      {
+        "source": "/privacidade",
+        "destination": "/privacidade.html"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "disallowLegacyRuntimeConfig": true,
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}
