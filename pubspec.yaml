@@ -1,7 +1,7 @@
 name: koda
 description: Kodaff Investimentos - Smart Money
 publish_to: 'none'
-version: 1.0.0+11
+version: 1.0.0+12
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -33,6 +33,7 @@ dependencies:
   # Ícones e splash
   flutter_launcher_icons: ^0.14.1
   flutter_native_splash: ^2.4.3
+  sign_in_with_apple: ^8.1.0
 
 dev_dependencies:
   flutter_test:

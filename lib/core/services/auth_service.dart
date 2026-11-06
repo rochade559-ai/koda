@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AuthService {
@@ -71,27 +72,24 @@ class AuthService {
   }
 
   // ============================================================
-  // LOGIN / CADASTRO COM GOOGLE (CORRIGIDO PARA WEB)
+  // LOGIN / CADASTRO COM GOOGLE
   // ============================================================
   static Future<User?> loginComGoogle() async {
     try {
       UserCredential userCred;
 
       if (kIsWeb) {
-        // ✅ SOLUÇÃO WEB: Usa o popup nativo do Firebase
-        // Isso resolve o erro de COOP e a demora pra logar na web
         final GoogleAuthProvider googleProvider = GoogleAuthProvider();
         googleProvider.addScope('email');
         googleProvider.addScope('profile');
         userCred = await _auth.signInWithPopup(googleProvider);
       } else {
-        // ✅ SOLUÇÃO MOBILE (Android/iOS)
         final GoogleSignIn googleSignIn = GoogleSignIn(
           serverClientId: _webClientId,
         );
 
         final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-        if (googleUser == null) return null; // usuário cancelou
+        if (googleUser == null) return null;
 
         final GoogleSignInAuthentication googleAuth =
             await googleUser.authentication;
@@ -107,7 +105,6 @@ class AuthService {
       final user = userCred.user;
 
       if (user != null) {
-        // Cria/atualiza o perfil no Firestore (serve pra login E cadastro)
         await _db.collection('usuarios').doc(user.uid).set({
           'uid': user.uid,
           'email': user.email,
@@ -123,6 +120,53 @@ class AuthService {
       throw Exception(_traduzirErro(e));
     } catch (e) {
       throw Exception('Erro no login com Google: $e');
+    }
+  }
+
+  // ============================================================
+  // LOGIN / CADASTRO COM APPLE
+  // ============================================================
+  static Future<User?> loginComApple() async {
+    try {
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      final userCred = await _auth.signInWithCredential(oauthCredential);
+      final user = userCred.user;
+
+      if (user != null) {
+        // Salva os dados no Firestore
+        String nome = '';
+        if (appleCredential.givenName != null ||
+            appleCredential.familyName != null) {
+          nome =
+              '${appleCredential.givenName ?? ''} ${appleCredential.familyName ?? ''}'
+                  .trim();
+        }
+
+        await _db.collection('usuarios').doc(user.uid).set({
+          'uid': user.uid,
+          'email': user.email ?? appleCredential.email,
+          'nome': nome.isNotEmpty ? nome : (user.displayName ?? ''),
+          'email_verificado': user.emailVerified,
+          'ultimo_login': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      }
+
+      return user;
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_traduzirErro(e));
+    } catch (e) {
+      throw Exception('Erro no login com Apple: $e');
     }
   }
 
@@ -261,6 +305,10 @@ class AuthService {
         return 'Login cancelado.';
       case 'cancelled':
         return 'Login cancelado.';
+      case 'apple-login-cancelled':
+        return 'Login com Apple cancelado.';
+      case 'apple-login-not-supported':
+        return 'Login com Apple não suportado neste dispositivo.';
       default:
         return 'Erro: ${e.message ?? e.code}';
     }
