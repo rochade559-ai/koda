@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart'; // 👈 IMPORT ADICIONADO
+import 'package:sign_in_with_apple/sign_in_with_apple.dart'; // 👈 IMPORT OBRIGATÓRIO
 import '../../core/constants/app_colors.dart';
 import '../../core/services/auth_service.dart';
 import '../../routes/app_routes.dart';
@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // 👇 FUNÇÃO ADICIONADA PARA O APPLE 👇
+  // 👇 FUNÇÃO DO APPLE ADICIONADA 👇
   Future<void> _entrarComApple() async {
     setState(() {
       _carregandoApple = true;
