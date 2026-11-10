@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart'; // 👈 IMPORT OBRIGATÓRIO PARA A APPLE
 import '../../core/constants/app_colors.dart';
 import '../../core/services/auth_service.dart';
 import '../../routes/app_routes.dart';
@@ -19,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _carregando = false;
   bool _carregandoGoogle = false;
+  bool _carregandoApple = false; // 👈 VARIÁVEL ADICIONADA
   String? _erro;
 
   @override
@@ -28,9 +30,6 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  // ============================================================
-  // LOGIN COM EMAIL/SENHA
-  // ============================================================
   Future<void> _entrar() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -57,9 +56,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // ============================================================
-  // LOGIN COM GOOGLE
-  // ============================================================
   Future<void> _entrarComGoogle() async {
     setState(() {
       _carregandoGoogle = true;
@@ -83,6 +79,33 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() => _erro = e.toString().replaceFirst('Exception: ', ''));
     } finally {
       if (mounted) setState(() => _carregandoGoogle = false);
+    }
+  }
+
+  // 👇 FUNÇÃO DO APPLE ADICIONADA 👇
+  Future<void> _entrarComApple() async {
+    setState(() {
+      _carregandoApple = true;
+      _erro = null;
+    });
+
+    try {
+      final user = await AuthService.loginComApple();
+      if (!mounted) return;
+
+      if (user != null) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.home,
+          (route) => false,
+        );
+      } else {
+        setState(() => _carregandoApple = false);
+      }
+    } catch (e) {
+      setState(() => _erro = e.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      if (mounted) setState(() => _carregandoApple = false);
     }
   }
 
@@ -223,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 20),
 
-                // ============ BOTÃO GOOGLE (SIMPLIFICADO) ============
+                // ============ BOTÃO GOOGLE ============
                 SizedBox(
                   height: 56,
                   child: OutlinedButton(
@@ -248,7 +271,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Ícone do Google — círculo azul com "G"
                               Container(
                                 width: 24,
                                 height: 24,
@@ -280,6 +302,21 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                   ),
                 ),
+
+                // 👇 BOTÃO DA APPLE ADICIONADO AQUI 👇
+                if (Theme.of(context).platform == TargetPlatform.iOS) ...[
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 56,
+                    child: _carregandoApple
+                        ? const Center(child: CircularProgressIndicator())
+                        : SignInWithAppleButton(
+                            onPressed: _entrarComApple,
+                            style: SignInWithAppleButtonStyle.black,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                  ),
+                ],
 
                 const SizedBox(height: 20),
 
