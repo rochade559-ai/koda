@@ -1,3 +1,4 @@
+import 'dart:io' show Platform; // 👈 IMPORT ADICIONADO PARA VERIFICAR O SISTEMA
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -49,6 +50,27 @@ class _ComprarCryptonsScreenState extends State<ComprarCryptonsScreen> {
       Navigator.pushNamed(context, AppRoutes.login);
       return;
     }
+
+    // 👇 BLOQUEIO DO STRIPE NO IOS ADICIONADO AQUI 👇
+    if (Platform.isIOS) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Compra no iOS'),
+          content: const Text(
+            'Para comprar Cryptons no iPhone, por favor, acesse nossa versão web no navegador do seu celular pelo site: www.kodaff.com',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Entendi'),
+            ),
+          ],
+        ),
+      );
+      return; // Impede que o checkout do Stripe abra no iOS
+    }
+    // 👆 FIM DO BLOQUEIO 👆
 
     setState(() => _processando = true);
 
